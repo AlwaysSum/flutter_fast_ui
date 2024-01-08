@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -19,11 +21,11 @@ class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   final _flutterFastUiPlugin = FastUI();
 
-  @override
-  void initState() {
-    super.initState();
-    initPlatformState();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   initPlatformState();
+  // }
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
@@ -43,27 +45,47 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    const config = """{
+"type": "container",
+"color": 4294901760,
+"child": {
+"type": "text",
+"color": 4294967295,
+"decorates": [
+{
+"type": "padding",
+"padding": 10
+},
+{
+"type": "event",
+"onTap": "@{onRefresh}"
+}
+],
+"text": "Running on: FastUI \${name}"
+}
+}""";
+
+    final configMap = jsonDecode(config);
+
+    print("@@@nihao---->$_platformVersion");
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: const Center(
-          child: FastDynamicView(config: {
-            "type": 'container',
-            'color': 0xffff0000,
-            'child': {
-              "type": "text",
-              'color': 0xffffffff,
-              "decorates": [
-                {
-                  "type": "padding",
-                  'padding': 40,
-                },
-              ],
-              'text': 'Running on: FastUI',
-            }
-          }),
+        body: Center(
+          child: FastDynamicView(
+            data: const {":name": "小明"},
+            methods: {
+              "onRefresh": () {
+                setState(() {
+                  _platformVersion = "${_platformVersion}!!!";
+                });
+              }
+            },
+            config: configMap,
+          ),
         ),
       ),
     );

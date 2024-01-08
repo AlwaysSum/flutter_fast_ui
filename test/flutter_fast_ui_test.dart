@@ -50,4 +50,48 @@ void main() {
     });
     print(value);
   });
+  test("提取变量", () {
+    // List<String> variableNames = [];
+    // 正则表达式模式，匹配${变量名}
+    // final pattern = RegExp(r'\$\{[^}]+}');
+    final pattern = RegExp(r'\$\{([^}]*)\}');
+    const input = r"asdfasdgtast 年少的发生的${  name } asdf ${age}  ${name}";
+    const data = {
+      "name": "名字",
+      "age": 123,
+    };
+    final res = input.replaceAllMapped(pattern, (match) {
+      if (match[0] != null) {
+        final reg = RegExp(r"(?<=\$\{)(.*?)(?=\})");
+        final item = reg.firstMatch(match[0]!);
+        if (item?[0] != null) {
+          final dataValue = data[item![0]!.trim()].toString();
+         return dataValue;
+          // result = result.replaceAll(item![0]!, dataValue ?? "");
+        }
+      }
+      return "";
+    });
+    print("@@@=>>> $res");
+
+    final matches = pattern.allMatches(input);
+
+    var result = input;
+
+    for (Match match in matches) {
+      // 从匹配结果中获取变量名
+      // print(match.group(1) ?? "---");
+      print(match[0] ?? "---");
+      if (match[0] != null) {
+        final reg = RegExp(r"(?<=\$\{)(.*?)(?=\})");
+        final item = reg.firstMatch(match[0]!);
+        if (item?[0] != null) {
+          final dataValue = data[item![0]!.trim()].toString();
+          result = result.replaceAll(match![0]!, dataValue ?? "");
+        }
+      }
+    }
+    print(result);
+    print(matches.length);
+  });
 }

@@ -4,7 +4,6 @@ import 'package:flutter_fast_ui/src/parser/decorates/base.dart';
 import 'package:flutter_fast_ui/src/parser/view/base.dart';
 import 'package:flutter_fast_ui/src/types.dart';
 
-import '../scheme/scheme.dart';
 
 class FastText extends StatelessWidget implements FastWidget {
   //文本颜色

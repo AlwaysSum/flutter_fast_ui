@@ -1,4 +1,5 @@
 import 'package:flutter_fast_ui/src/parser/decorates/base.dart';
+import 'package:flutter_fast_ui/src/parser/decorates/fast_event.dart';
 import 'package:flutter_fast_ui/src/parser/decorates/fast_padding.dart';
 import 'package:flutter_fast_ui/src/parser/view/base.dart';
 import 'package:flutter_fast_ui/src/parser/view/container.dart';
@@ -25,6 +26,10 @@ class FastSystemParser {
     'padding': FastConfigParserBuilder<FastDecorate>(
       scheme: FastPadding.scheme,
       builder: FastPadding.fromJson,
+    ),
+    'event': FastConfigParserBuilder<FastDecorate>(
+      scheme: FastEvent.scheme,
+      builder: FastEvent.fromJson,
     ),
   };
 }

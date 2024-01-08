@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_fast_ui/flutter_fast_ui.dart';
-import 'package:flutter_fast_ui/src/parser/view/base.dart';
 
 ///配置
 typedef FastUIConfig = Map<String, dynamic>;

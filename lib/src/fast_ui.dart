@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fast_ui/src/parser/decorates/base.dart';
 import 'package:flutter_fast_ui/src/parser/view/base.dart';
 import 'package:flutter_fast_ui/src/types.dart';
+import 'package:flutter_fast_ui/src/utils/utils_regex.dart';
 
 import '../flutter_fast_ui_platform_interface.dart';
 import 'const/keys.dart';
@@ -16,34 +17,52 @@ class FastUI {
   }
 
   ///解析 配置
-  static FastWidget? decodeConfig(Map<String, dynamic> config) {
+  static FastWidget? decodeConfig(
+    Map<String, dynamic> config, {
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? methods,
+  }) {
     if (config.containsKey(FastKey.type)) {
       return _parseConfigJson(
         config[FastKey.type],
         config,
         systemParser.parser,
+        data: data,
+        methods: methods,
       );
     }
     return null;
   }
 
   ///单独解析装饰器
-  static FastDecorate? decodeDecorateConfig(Map<String, dynamic> config) {
+  static FastDecorate? decodeDecorateConfig(
+    Map<String, dynamic> config, {
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? methods,
+  }) {
     if (config.containsKey(FastKey.type)) {
       return _parseConfigJson(
         config[FastKey.type],
         config,
         systemParser.parserDecorate,
+        data: data,
+        methods: methods,
       );
     }
     return null;
   }
 
   ///解析配置的单个组件的 json
-  static T? _parseConfigJson<T>(String type, FastUIConfig config,
-      Map<String, FastConfigParserBuilder<T>> parsers) {
+  static T? _parseConfigJson<T>(
+    String type,
+    FastUIConfig config,
+    Map<String, FastConfigParserBuilder<T>> parsers, {
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? methods,
+  }) {
     final allParser = parsers;
     Map<String, dynamic> parsedConfig = {};
+
     if (config is Map<String, dynamic> &&
         config.containsKey(FastKey.type) &&
         allParser.containsKey(config[FastKey.type])) {
@@ -54,19 +73,37 @@ class FastUI {
         //执行约束转换
         FastScheme? scheme = parser.scheme[key];
         if (scheme != null) {
-          result = _parserBySchemeValue(type, key, result, scheme);
+          result = _parserBySchemeValue(
+            type,
+            key,
+            result,
+            scheme,
+            data: data,
+            methods: methods,
+          );
         }
         //转换组件
         if (result is FastUIConfig && result.containsKey(FastKey.type)) {
-          result = _parseConfigJson<T>(result[FastKey.type], result, parsers);
+          result = _parseConfigJson<T>(
+            result[FastKey.type],
+            result,
+            parsers,
+            data: data,
+            methods: methods,
+          );
         }
+
         parsedConfig[key] = result;
       });
 
       //处理装饰器
       if (parsedConfig.containsKey(FastKey.decorate)) {
         if (T case FastWidget) {
-          parsedConfig[FastKey.decorate] = _transformDecorateJson(parsedConfig);
+          parsedConfig[FastKey.decorate] = _transformDecorateJson(
+            parsedConfig,
+            data: data,
+            methods: methods,
+          );
         }
       }
       //映射类型
@@ -80,8 +117,10 @@ class FastUI {
     String type,
     String key,
     dynamic value,
-    FastScheme<T> scheme,
-  ) {
+    FastScheme<T> scheme, {
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? methods,
+  }) {
     if (scheme.defaultValue != null && value == null) {
       value = scheme.defaultValue;
     }
@@ -90,12 +129,44 @@ class FastUI {
       scheme.require == false || value != null,
       '$errMsg:为必填参数。',
     );
+
+    ///解析动态值、和函数方法
+    if (value is String) {
+      if (scheme.valueType case String) {
+        //替换字符串中的变量和函数
+        return RegexUtils.replaceStringVariable(value, data ?? {}) as T?;
+      } else {
+        //获取函数或变量
+        if (value.startsWith("@")) {
+          //需要获取函数
+          final name = RegexUtils.getMethodNameByString(value);
+          final method = methods?[name];
+          if (method != null) {
+            if (scheme.valueType case Function) {
+              return () {
+                method();
+              } as T?;
+            } else {
+              return method();
+            }
+          }
+        } else if (value.startsWith("\$")) {
+          //需要获取变量
+          final name = RegexUtils.getVariableNameByString(value);
+          if (name != null) {
+            value = data?[name];
+          }
+          return value;
+        }
+      }
+    }
+
     //一些特殊类型转换
     if (scheme.valueType case Color) {
       assert(value is int, "$errMsg:值必须为 int 类型");
       value = Color(value);
     } else if (scheme.valueType case EdgeInsets) {
-      if (value is double) {
+      if (value is num) {
         value = EdgeInsets.all(value.toDouble());
       } else if (value is Map<String, double>) {
         if (value.containsKey('vertical') || value.containsKey('horizontal')) {
@@ -115,16 +186,26 @@ class FastUI {
         value = EdgeInsets.zero;
       }
     }
+
     return value;
   }
 
   /// 解析装饰器配置
-  static List<FastDecorate> _transformDecorateJson(FastUIConfig config) {
+  static List<FastDecorate> _transformDecorateJson(
+    FastUIConfig config, {
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? methods,
+  }) {
     final decorates = config[FastKey.decorate];
     List<FastDecorate?> result = [];
     if (decorates != null && decorates is List && decorates.isNotEmpty) {
-      result =
-          decorates.map<FastDecorate?>((e) => decodeDecorateConfig(e)).toList();
+      result = decorates
+          .map<FastDecorate?>((e) => decodeDecorateConfig(
+                e,
+                data: data,
+                methods: methods,
+              ))
+          .toList();
     }
     return result.nonNulls.toList();
   }
