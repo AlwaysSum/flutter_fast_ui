@@ -13,6 +13,15 @@ abstract class FastWidget extends Widget {
   Widget build(BuildContext context);
 
   final List<FastDecorate>? decorates;
+
+  static buildWidget(
+    BuildContext context,
+    Widget? widget,
+  ) {
+    return widget is FastWidget
+        ? widget.applyDecorateAfterBuild(context)
+        : widget;
+  }
 }
 
 extension FastWidgetExt on FastWidget {

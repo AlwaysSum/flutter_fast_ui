@@ -19,13 +19,15 @@ class FastDynamicView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ///动态值转换
     final ui = FastUI.decodeConfig(
       config,
       data: data,
       methods: methods,
     );
+
     if (ui != null) {
-      return ui.applyDecorateAfterBuild(context);
+      return FastWidget.buildWidget(context, ui);
     }
 
     return const Placeholder();

@@ -66,7 +66,7 @@ void main() {
         final item = reg.firstMatch(match[0]!);
         if (item?[0] != null) {
           final dataValue = data[item![0]!.trim()].toString();
-         return dataValue;
+          return dataValue;
           // result = result.replaceAll(item![0]!, dataValue ?? "");
         }
       }
@@ -94,4 +94,32 @@ void main() {
     print(result);
     print(matches.length);
   });
+  test("提取 函数名称和变量名", () {
+    final input = "@{test(\$name,你好)}";
+    final functionNameRegex = RegExp(r"[a-zA-Z]*(?=\()");
+    final match = functionNameRegex.firstMatch(input);
+    print("@@@@===> ${match?[0]}");
+
+    final argsRegex = RegExp(r"\(\s*([^)]+?)\s*\)");
+    final argsMatch = argsRegex.firstMatch(input);
+    print("@@@=>>${argsMatch?[0]}  ${argsMatch?[1]}");
+
+    final [name, age] = ["你好", 123];
+
+    print("@@@ $name  , @@@ $age");
+
+
+    // if (argsMatch?[1] != null) {
+    //   final args =
+    //       argsMatch![1]!.split(",");
+    //   for (var element in args) {
+    //     element.trim();
+    //   }
+    //   print("@@@@===> ${args}");
+    // }
+  });
+}
+
+testName(String name, int age) {
+  print("@@@name=$name,age=$age");
 }

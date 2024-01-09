@@ -30,7 +30,7 @@ class FastContainer extends StatelessWidget implements FastWidget {
       decoration: BoxDecoration(
         color: color,
       ),
-      child: child?.applyDecorateAfterBuild(context),
+      child: FastWidget.buildWidget(context, child),
     );
   }
 

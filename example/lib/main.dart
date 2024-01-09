@@ -1,12 +1,15 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'dart:async';
-
 import 'package:flutter/services.dart';
 import 'package:flutter_fast_ui/flutter_fast_ui.dart';
 
 void main() {
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    print(details);
+  };
   runApp(const MyApp());
 }
 
@@ -45,7 +48,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    const config = """{
+    const config = r"""{
 "type": "container",
 "color": 4294901760,
 "child": {
@@ -54,14 +57,14 @@ class _MyAppState extends State<MyApp> {
 "decorates": [
 {
 "type": "padding",
-"padding": 10
+"padding": 100
 },
 {
 "type": "event",
-"onTap": "@{onRefresh}"
+"onTap": "@{onRefresh(${:name})}"
 }
 ],
-"text": "Running on: FastUI \${name}"
+"text": "Running on: FastUI ${:name}"
 }
 }""";
 
@@ -69,6 +72,7 @@ class _MyAppState extends State<MyApp> {
 
     print("@@@nihao---->$_platformVersion");
 
+    final data = {":name": ValueNotifier("小明")};
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -76,12 +80,16 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Center(
           child: FastDynamicView(
-            data: const {":name": "小明"},
+            data: data,
             methods: {
-              "onRefresh": () {
-                setState(() {
-                  _platformVersion = "${_platformVersion}!!!";
-                });
+              "onRefresh": (List args) {
+                final [ValueNotifier name] = args;
+                print("@@@！！ ${name}");
+                return () {
+                  print("@@@>>>> ${name}");
+                  name.value = "${name.value}!!";
+                  name.notifyListeners();
+                };
               }
             },
             config: configMap,

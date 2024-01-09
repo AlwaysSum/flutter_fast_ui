@@ -23,6 +23,7 @@ class FastEvent implements FastDecorate {
   };
 
   factory FastEvent.fromJson(FastUIConfig config) {
+    print("@!!!! $config");
     return FastEvent(onTap: config['onTap']);
   }
 }
