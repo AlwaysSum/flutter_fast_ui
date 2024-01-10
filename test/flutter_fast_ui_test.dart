@@ -72,8 +72,6 @@ void main() {
       }
       return "";
     });
-    print("@@@=>>> $res");
-
     final matches = pattern.allMatches(input);
 
     var result = input;
@@ -108,7 +106,6 @@ void main() {
 
     print("@@@ $name  , @@@ $age");
 
-
     // if (argsMatch?[1] != null) {
     //   final args =
     //       argsMatch![1]!.split(",");
@@ -118,8 +115,4 @@ void main() {
     //   print("@@@@===> ${args}");
     // }
   });
-}
-
-testName(String name, int age) {
-  print("@@@name=$name,age=$age");
 }

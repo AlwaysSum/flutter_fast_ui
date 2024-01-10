@@ -19,10 +19,30 @@ class FastDynamicView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //处理 动态数据
+    final newData = data?.map((key, value) {
+      if (key.startsWith(":") && value is! ValueNotifier) {
+        if (value is String) {
+          return MapEntry(key, ValueNotifier<String>(value));
+        } else if (value is num) {
+          return MapEntry(key, ValueNotifier<num>(value));
+        } else if (value is bool) {
+          return MapEntry(key, ValueNotifier<bool>(value));
+        } else if (value is List) {
+          return MapEntry(key, ValueNotifier<List>(value));
+        } else if (value is Map) {
+          return MapEntry(key, ValueNotifier<Map>(value));
+        } else {
+          return MapEntry(key, ValueNotifier(value));
+        }
+      }
+      return MapEntry(key, value);
+    });
+
     ///动态值转换
     final ui = FastUI.decodeConfig(
       config,
-      data: data,
+      data: newData,
       methods: methods,
     );
 

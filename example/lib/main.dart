@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,30 +50,34 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     const config = r"""{
-"type": "container",
-"color": 4294901760,
-"child": {
-"type": "text",
-"color": 4294967295,
-"decorates": [
-{
-"type": "padding",
-"padding": 100
-},
-{
-"type": "event",
-"onTap": "@{onRefresh(${:name})}"
-}
-],
-"text": "Running on: FastUI ${:name}"
-}
+    "type": "container",
+    "color": 4294901760,
+    "child": {
+        "type": "text",
+        "color": 4294967295,
+        "decorates": [
+            {
+                "type": "padding",
+                "padding": "${:padding}"
+            },
+            {
+                "type": "event",
+                "onTap": "@{add(${:padding},20)}"
+            }
+        ],
+        "text": "Running on: FastUI , ${:name}"
+    }
 }""";
+
+    const data = r"""
+          {
+              ":name": "小明",
+              ":padding": 10
+            }
+    """;
 
     final configMap = jsonDecode(config);
 
-    print("@@@nihao---->$_platformVersion");
-
-    final data = {":name": ValueNotifier("小明")};
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -80,15 +85,17 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Center(
           child: FastDynamicView(
-            data: data,
+            data: jsonDecode(data),
             methods: {
               "onRefresh": (List args) {
-                final [ValueNotifier name] = args;
-                print("@@@！！ ${name}");
+                print("@@@ $args");
+                final [ValueNotifier<String> name, ValueNotifier<num> padding] =
+                    args;
                 return () {
-                  print("@@@>>>> ${name}");
                   name.value = "${name.value}!!";
+                  padding.value = min(padding.value + 10, 50);
                   name.notifyListeners();
+                  padding.notifyListeners();
                 };
               }
             },
