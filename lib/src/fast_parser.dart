@@ -204,9 +204,10 @@ class FastParser {
                 //需要获取变量
                 final subName = RegexUtils.getVariableNameByString(e);
                 final subValue = data?[subName];
-                if (subValue != null) {
-                  allUseValues[subName!] = subValue;
-                }
+                //TODO 函数中的变量是否需要监听，待后续思考
+                // if (subValue != null) {
+                //   allUseValues[subName!] = subValue;
+                // }
                 return subValue;
               }
               return e;
