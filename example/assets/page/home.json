@@ -1,0 +1,53 @@
+{
+  "data": {
+    ":name": "小明",
+    ":padding": 10
+  },
+  "config": {
+    "type": "container",
+    "child": {
+      "type": "row",
+      "children": [
+        {
+          "type": "container",
+          "color": "#00ff00",
+          "child": {
+            "type": "text",
+            "color": "#ff0000",
+            "decorates": [
+              {
+                "type": "padding",
+                "padding": "${:padding}"
+              },
+              {
+                "type": "event",
+                "onTap": "@{add(${:padding},20)}"
+              }
+            ],
+            "text": "第一, ${:name}"
+          }
+        },
+        {
+          "type": "container",
+          "color": "#ff0000",
+          "child": {
+            "type": "text",
+            "color": "#ffffff",
+            "decorates": [
+              {
+                "type": "padding",
+                "padding": "${:padding}"
+              },
+              {
+                "type": "event",
+                "onTap": "@{add(${:padding},20)}"
+              }
+            ],
+            "text": "第二： ${:name}"
+          }
+        }
+      ]
+    }
+  }
+}
+

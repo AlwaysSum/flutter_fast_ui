@@ -3,34 +3,32 @@ import 'package:flutter_fast_ui/flutter_fast_ui.dart';
 import 'package:flutter_fast_ui/src/types.dart';
 import 'package:flutter_fast_ui/src/view/base.dart';
 
-class FastRowBuilder extends FastWidgetBuilder {
+class FastImageBuilder extends FastWidgetBuilder {
   @override
   Widget buildWidget(BuildContext context, FastUIConfig config) {
-    return FastRow(
-      children: config['children'],
+    return FastImage(
+      src: config['src'],
     );
   }
 
   @override
   Map<String, FastScheme> get scheme => {
-        "children": FastScheme<List<Widget>>(),
+        "src": FastScheme<String>(),
       };
 }
 
-/// Row
-class FastRow extends StatelessWidget {
+/// FastImage
+class FastImage extends StatelessWidget {
   //配置文件
-  final List<Widget> children;
+  final String src;
 
-  const FastRow({
-    required this.children,
+  const FastImage({
+    required this.src,
     super.key,
-  }) : assert(children is List<Widget>?);
+  }) : assert(src is String);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: children,
-    );
+    return Image.network(src);
   }
 }

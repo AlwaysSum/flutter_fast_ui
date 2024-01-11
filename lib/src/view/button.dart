@@ -4,10 +4,10 @@ import 'package:flutter_fast_ui/src/types.dart';
 import 'package:flutter_fast_ui/src/view/base.dart';
 
 ///构建器
-class FastTextBuilder extends FastWidgetBuilder {
+class FastButtonBuilder extends FastWidgetBuilder {
   @override
   Widget buildWidget(BuildContext context, FastUIConfig config) {
-    return FastText(
+    return FastButton(
       config['text'],
       color: config['color'],
     );
@@ -20,14 +20,14 @@ class FastTextBuilder extends FastWidgetBuilder {
       };
 }
 
-class FastText extends StatelessWidget {
+class FastButton extends StatelessWidget {
   //文本颜色
   final Color? color;
 
   //文本
   final String? data;
 
-  const FastText(
+  const FastButton(
     this.data, {
     super.key,
     this.color,
@@ -36,10 +36,13 @@ class FastText extends StatelessWidget {
   /// 解析方式
   @override
   Widget build(BuildContext context) {
-    return Text(
-      data ?? '',
-      style: TextStyle(
-        color: color,
+    return MaterialButton(
+      onPressed: () {},
+      child: Text(
+        data ?? '',
+        style: TextStyle(
+          color: color,
+        ),
       ),
     );
   }

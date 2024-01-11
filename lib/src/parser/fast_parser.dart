@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_fast_ui/src/utils/utils_value.dart';
 
 import '../../flutter_fast_ui.dart';
 import '../decorates/base.dart';
@@ -66,6 +67,7 @@ class FastParser {
     bool skipNotifier = false,
   }) {
     final allParser = parsers;
+
     Map<String, dynamic> parsedConfig = {};
     final notifierValues = <String, ValueListenable>{};
 
@@ -76,38 +78,16 @@ class FastParser {
 
       //转换属性
       config.forEach((key, value) {
+        //解析值
         var result = value;
-        // 获取变量约束
-        FastScheme? scheme = parser.scheme[key];
-        // 解析变量和函数调用
-        final (parsedResult, notifiers) = _parseDynamicMethodsAndVariable(
-          value,
-          scheme,
-          data,
-          methods,
-        );
-        result = parsedResult;
-        notifierValues.addAll(notifiers);
-
-        //执行约束转换
-        if (scheme != null) {
-          result = _parserBySchemeValue(
-            type,
-            key,
-            result,
-            scheme,
-            data: data,
-            methods: methods,
-          );
-        }
-        //转换组件
-        if (result is FastUIConfig && result.containsKey(FastKey.type)) {
-          result = _parseConfigJson<T>(
-            context,
-            result[FastKey.type],
-            result,
-            parsers,
-          );
+        if (value is List && key != FastKey.decorate) {
+          result = value
+              .map<T>((e) => _parserValue<T>(
+                  context, config, type, key, e, allParser, notifierValues))
+              .toList();
+        } else {
+          result = _parserValue<T>(
+              context, config, type, key, value, allParser, notifierValues);
         }
 
         parsedConfig[key] = result;
@@ -165,6 +145,57 @@ class FastParser {
       }
     }
     return null;
+  }
+
+  ///解析值
+  _parserValue<T>(
+    BuildContext context,
+    FastUIConfig config,
+    String type,
+    String key,
+    dynamic value,
+    Map<String, FastConfigParserBuilder<T>> allParser,
+    Map<String, ValueListenable> notifierValues,
+  ) {
+    final parser = allParser[config[FastKey.type]]!;
+    var result = value;
+    // 获取变量约束
+    FastScheme? scheme = parser.scheme[key];
+
+    // 解析变量和函数调用
+    final (parsedResult, notifiers) = _parseDynamicMethodsAndVariable(
+      value,
+      scheme,
+      data,
+      methods,
+    );
+    result = parsedResult;
+    notifierValues.addAll(notifiers);
+
+    //执行约束转换
+    if (scheme != null) {
+      result = _parserBySchemeValue(
+        type,
+        key,
+        result,
+        scheme,
+        data: data,
+        methods: methods,
+      );
+    }
+
+    //转换组件
+    if (result is FastUIConfig &&
+        result.containsKey(FastKey.type) &&
+        (key == FastKey.child || key == FastKey.children)) {
+      result = _parseConfigJson<T>(
+        context,
+        result[FastKey.type],
+        result,
+        allParser,
+      );
+    }
+    return result;
   }
 
   ///解析一些动态变量和函数
@@ -262,8 +293,13 @@ class FastParser {
 
     //一些特殊类型转换
     if (scheme.valueType case Color) {
-      assert(value is int, "$errMsg:值必须为 int 类型");
-      value = Color(value);
+      if (value is int) {
+        value = Color(value);
+      } else if (value is String) {
+        value = UtilsValue.fromHexColor(value);
+      } else {
+        assert(value is int, "$errMsg:值必须为 int 类型或者 hex 字符串。");
+      }
     } else if (scheme.valueType case EdgeInsets) {
       if (value is num) {
         value = EdgeInsets.all(value.toDouble());
@@ -295,6 +331,7 @@ class FastParser {
     final decorates = config[FastKey.decorate];
     List<FastDecorate?> result = [];
     if (decorates != null && decorates is List && decorates.isNotEmpty) {
+      print("@@@ $decorates");
       result = decorates
           .map<FastDecorate?>((e) => decodeDecorateConfig(context, e))
           .toList();

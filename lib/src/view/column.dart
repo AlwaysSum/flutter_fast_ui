@@ -3,10 +3,10 @@ import 'package:flutter_fast_ui/flutter_fast_ui.dart';
 import 'package:flutter_fast_ui/src/types.dart';
 import 'package:flutter_fast_ui/src/view/base.dart';
 
-class FastRowBuilder extends FastWidgetBuilder {
+class FastColumnBuilder extends FastWidgetBuilder {
   @override
   Widget buildWidget(BuildContext context, FastUIConfig config) {
-    return FastRow(
+    return FastColumn(
       children: config['children'],
     );
   }
@@ -18,18 +18,18 @@ class FastRowBuilder extends FastWidgetBuilder {
 }
 
 /// Row
-class FastRow extends StatelessWidget {
+class FastColumn extends StatelessWidget {
   //配置文件
   final List<Widget> children;
 
-  const FastRow({
+  const FastColumn({
     required this.children,
     super.key,
   }) : assert(children is List<Widget>?);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: children,
     );
   }

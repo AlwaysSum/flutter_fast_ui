@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fast_ui/flutter_fast_ui.dart';
 
-import 'view/base.dart';
-
 /// 通过动态解码配置文件渲染一个组件
 
 class FastDynamicView extends StatelessWidget {

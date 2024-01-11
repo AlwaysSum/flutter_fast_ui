@@ -18,14 +18,14 @@
 
 ###### 基础组件
 
-1. [ ] Container
-2. [ ] Text
-3. [ ] Row
-4. [ ] Column
+1. [x] Container
+2. [x] Text
+3. [x] Row
+4. [x] Column
 5. [ ] Stack
 6. [ ] Warp
 7. [ ] List
-8. [ ] Image
+8. [x] Image
 9. [ ] Icon
 10. [ ] Button
 11. [ ] GridView
