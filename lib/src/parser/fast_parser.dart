@@ -1,12 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../flutter_fast_ui.dart';
-import 'parser/decorates/base.dart';
-import 'parser/decorates/fast_value_builder.dart';
-import 'parser/view/base.dart';
-import 'types.dart';
-import 'utils/utils_regex.dart';
+import '../../flutter_fast_ui.dart';
+import '../decorates/base.dart';
+import '../decorates/fast_value_builder.dart';
+import '../types.dart';
+import '../utils/utils_regex.dart';
 
 /// 解析器
 class FastParser {
@@ -17,7 +16,7 @@ class FastParser {
   final Map<String, dynamic> methods;
 
   /// 组件解析器
-  final Map<String, FastConfigParserBuilder<FastWidget>> parsers;
+  final Map<String, FastConfigParserBuilder<Widget>> parsers;
 
   /// 装饰器解释器
   final Map<String, FastConfigParserBuilder<FastDecorate>> parserDecorates;
@@ -30,9 +29,10 @@ class FastParser {
   });
 
   ///解析 配置
-  FastWidget? decodeConfig(Map<String, dynamic> config) {
+  Widget? decodeConfig(BuildContext context, Map<String, dynamic> config) {
     if (config.containsKey(FastKey.type)) {
       final ui = _parseConfigJson(
+        context,
         config[FastKey.type],
         config,
         parsers,
@@ -44,9 +44,11 @@ class FastParser {
   }
 
   ///单独解析装饰器
-  FastDecorate? decodeDecorateConfig(Map<String, dynamic> config) {
+  FastDecorate? decodeDecorateConfig(
+      BuildContext context, Map<String, dynamic> config) {
     if (config.containsKey(FastKey.type)) {
       return _parseConfigJson(
+        context,
         config[FastKey.type],
         config,
         parserDecorates,
@@ -57,6 +59,7 @@ class FastParser {
 
   ///解析配置的单个组件的 json
   T? _parseConfigJson<T>(
+    BuildContext context,
     String type,
     FastUIConfig config,
     Map<String, FastConfigParserBuilder<T>> parsers, {
@@ -74,7 +77,7 @@ class FastParser {
       //转换属性
       config.forEach((key, value) {
         var result = value;
-        //执行约束转换
+        // 获取变量约束
         FastScheme? scheme = parser.scheme[key];
         // 解析变量和函数调用
         final (parsedResult, notifiers) = _parseDynamicMethodsAndVariable(
@@ -86,6 +89,7 @@ class FastParser {
         result = parsedResult;
         notifierValues.addAll(notifiers);
 
+        //执行约束转换
         if (scheme != null) {
           result = _parserBySchemeValue(
             type,
@@ -99,6 +103,7 @@ class FastParser {
         //转换组件
         if (result is FastUIConfig && result.containsKey(FastKey.type)) {
           result = _parseConfigJson<T>(
+            context,
             result[FastKey.type],
             result,
             parsers,
@@ -108,40 +113,44 @@ class FastParser {
         parsedConfig[key] = result;
       });
 
-      if (T case FastWidget) {
+      if (T case Widget) {
+        List<FastDecorate> decorates = [];
         //处理装饰器
         if (parsedConfig.containsKey(FastKey.decorate)) {
-          parsedConfig[FastKey.decorate] = _transformDecorateJson(
+          decorates = _transformDecorateJson(
+            context,
             parsedConfig,
           );
         }
 
         if (notifierValues.isNotEmpty && !skipNotifier) {
-          parsedConfig[FastKey.decorate] ??= [];
-          List<FastDecorate> decorates = parsedConfig[FastKey.decorate];
           decorates.add(
             FastValueBuilder(
               values: notifierValues.values.toList(),
               builder: (context, _) {
-                return FastWidget.buildWidget(
+                return _parseConfigJson<T>(
                   context,
-                  _parseConfigJson<T>(
-                    type,
-                    config,
-                    parsers,
-                    skipNotifier: true,
-                  ) as FastWidget,
-                );
+                  type,
+                  config,
+                  parsers,
+                  skipNotifier: true,
+                ) as Widget;
               },
             ),
           );
         }
+        //映射类型
+        return decorates.applyAfterBuild(
+          context,
+          parser.builder(parsedConfig) as Widget,
+        ) as T;
       } else if (T case FastDecorate) {
         if (notifierValues.isNotEmpty && !skipNotifier) {
           return FastValueBuilder(
             values: notifierValues.values.toList(),
             builder: (context, child) {
               return (_parseConfigJson<T>(
+                context,
                 type,
                 config,
                 parsers,
@@ -151,10 +160,9 @@ class FastParser {
             },
           ) as T;
         }
+        //映射类型
+        return parser.builder(parsedConfig);
       }
-
-      //映射类型
-      return parser.builder(parsedConfig);
     }
     return null;
   }
@@ -282,12 +290,14 @@ class FastParser {
   }
 
   /// 解析装饰器配置
-  List<FastDecorate> _transformDecorateJson(FastUIConfig config) {
+  List<FastDecorate> _transformDecorateJson(
+      BuildContext context, FastUIConfig config) {
     final decorates = config[FastKey.decorate];
     List<FastDecorate?> result = [];
     if (decorates != null && decorates is List && decorates.isNotEmpty) {
-      result =
-          decorates.map<FastDecorate?>((e) => decodeDecorateConfig(e)).toList();
+      result = decorates
+          .map<FastDecorate?>((e) => decodeDecorateConfig(context, e))
+          .toList();
     }
     return result.nonNulls.toList();
   }

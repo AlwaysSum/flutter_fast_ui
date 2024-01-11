@@ -1,4 +1,4 @@
-import 'package:flutter_fast_ui/flutter_fast_ui.dart';
+import 'scheme/scheme.dart';
 
 ///配置
 typedef FastUIConfig = Map<String, dynamic>;

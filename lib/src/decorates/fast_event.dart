@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_fast_ui/src/parser/decorates/base.dart';
 import 'package:flutter_fast_ui/src/types.dart';
 import '../scheme/scheme.dart';
+import 'base.dart';
 
 ///内边距
 class FastEvent implements FastDecorate {

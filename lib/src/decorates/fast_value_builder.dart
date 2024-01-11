@@ -1,8 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_fast_ui/flutter_fast_ui.dart';
-import 'package:flutter_fast_ui/src/parser/view/base.dart';
-import 'package:flutter_fast_ui/src/types.dart';
 
 import '../decorates/base.dart';
 

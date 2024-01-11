@@ -1,16 +1,16 @@
-import 'package:flutter_fast_ui/src/parser/decorates/base.dart';
-import 'package:flutter_fast_ui/src/parser/decorates/fast_event.dart';
-import 'package:flutter_fast_ui/src/parser/decorates/fast_padding.dart';
-import 'package:flutter_fast_ui/src/parser/view/base.dart';
-import 'package:flutter_fast_ui/src/parser/view/container.dart';
-import 'package:flutter_fast_ui/src/parser/view/text.dart';
+import 'package:flutter/cupertino.dart';
 
+import '../decorates/base.dart';
+import '../decorates/fast_event.dart';
+import '../decorates/fast_padding.dart';
 import '../types.dart';
+import '../view/container.dart';
+import '../view/text.dart';
 
 ///系统的解析器
 class FastSystemParser {
   ///组件解析
-  final Map<String, FastConfigParserBuilder<FastWidget>> parser = {
+  final Map<String, FastConfigParserBuilder<Widget>> parser = {
     'text': FastConfigParserBuilder(
       scheme: FastText.scheme,
       builder: FastText.fromJson,

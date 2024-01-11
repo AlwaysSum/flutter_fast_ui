@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fast_ui/flutter_fast_ui.dart';
-import 'package:flutter_fast_ui/src/parser/view/base.dart';
+
+import 'view/base.dart';
 
 /// 通过动态解码配置文件渲染一个组件
 
@@ -41,13 +42,14 @@ class FastDynamicView extends StatelessWidget {
 
     ///动态值转换
     final ui = FastUI.decodeConfig(
+      context,
       config,
       data: newData,
       methods: methods,
     );
 
     if (ui != null) {
-      return FastWidget.buildWidget(context, ui);
+      return ui;
     }
 
     return const Placeholder();

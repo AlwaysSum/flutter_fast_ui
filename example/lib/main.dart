@@ -1,9 +1,7 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_fast_ui/flutter_fast_ui.dart';
 
 void main() {
@@ -22,31 +20,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  final _flutterFastUiPlugin = FastUI();
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   initPlatformState();
-  // }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    try {
-      platformVersion = await _flutterFastUiPlugin.getPlatformVersion() ??
-          'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     const config = r"""{
@@ -79,6 +52,7 @@ class _MyAppState extends State<MyApp> {
     final configMap = jsonDecode(config);
 
     return MaterialApp(
+      onGenerateRoute: (setting) {},
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),

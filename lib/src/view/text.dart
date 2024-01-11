@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fast_ui/flutter_fast_ui.dart';
-import 'package:flutter_fast_ui/src/parser/decorates/base.dart';
-import 'package:flutter_fast_ui/src/parser/view/base.dart';
 import 'package:flutter_fast_ui/src/types.dart';
 
+import 'base.dart';
 
-class FastText extends StatelessWidget implements FastWidget {
+class FastText extends StatelessWidget with FastWidget {
   //文本颜色
   final Color? color;
 
   //文本
   final String? data;
 
-  @override
-  final List<FastDecorate>? decorates;
-
   const FastText(
     this.data, {
     super.key,
     this.color,
-    this.decorates,
   }) : assert(color is Color?);
 
   /// 解析方式
@@ -45,7 +40,6 @@ class FastText extends StatelessWidget implements FastWidget {
     return FastText(
       config['text'],
       color: config['color'],
-      decorates: config[FastKey.decorate],
     );
   }
 }
