@@ -3,7 +3,7 @@ import 'package:flutter_fast_ui/src/types.dart';
 import '../scheme/scheme.dart';
 import 'base.dart';
 
-///内边距
+///事件
 class FastEvent implements FastDecorate {
   const FastEvent({this.onTap});
 
@@ -16,13 +16,17 @@ class FastEvent implements FastDecorate {
       child: child,
     );
   }
+}
 
-  ///声明配置
-  static Map<String, FastScheme> scheme = {
-    "onTap": FastScheme<Function>(),
-  };
-
-  factory FastEvent.fromJson(FastUIConfig config) {
+///构建器
+class FastEventBuilder extends FastDecorateBuilder {
+  @override
+  FastDecorate? buildDecorate(BuildContext context, FastUIConfig config) {
     return FastEvent(onTap: config['onTap']);
   }
+
+  @override
+  Map<String, FastScheme> get scheme => {
+        "onTap": FastScheme<Function>(),
+      };
 }

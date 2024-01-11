@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fast_ui/flutter_fast_ui.dart';
 import 'package:flutter_fast_ui/src/types.dart';
-
-import 'base.dart';
+import 'package:flutter_fast_ui/src/view/base.dart';
 
 ///一个基础容器
-class FastContainer extends StatelessWidget with FastWidget {
+class FastContainer extends StatelessWidget {
   // 颜色
   final Color? color;
 
@@ -28,17 +27,21 @@ class FastContainer extends StatelessWidget with FastWidget {
       child: child,
     );
   }
+}
 
-  static Map<String, FastScheme> scheme = {
-    "color": FastScheme<Color>(),
-    "child": FastScheme<FastUIConfig>(),
-  };
-
-  /// 解析配置
-  factory FastContainer.fromJson(FastUIConfig config) {
+///构建器
+class FastContainerBuilder extends FastWidgetBuilder {
+  @override
+  Widget buildWidget(BuildContext context, FastUIConfig config) {
     return FastContainer(
       config['child'],
       color: config['color'],
     );
   }
+
+  @override
+  Map<String, FastScheme> get scheme => {
+        "color": FastScheme<Color>(),
+        "child": FastScheme<FastUIConfig>(),
+      };
 }

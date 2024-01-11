@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import 'scheme/scheme.dart';
 
 ///配置
@@ -7,7 +9,7 @@ typedef FastUIConfig = Map<String, dynamic>;
 
 class FastConfigParserBuilder<T> {
   final Map<String, FastScheme> scheme;
-  final T? Function(FastUIConfig config) builder;
+  final T? Function(BuildContext context, FastUIConfig config) builder;
 
   FastConfigParserBuilder({required this.scheme, required this.builder});
 }

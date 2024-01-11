@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fast_ui/flutter_fast_ui.dart';
 import 'package:flutter_fast_ui/src/types.dart';
 
-import '../decorates/base.dart';
-import 'base.dart';
-
 /// Row
-class FastRow extends StatelessWidget with FastWidget {
+class FastRow extends StatelessWidget  {
   //配置文件
   final List<Widget> children;
 

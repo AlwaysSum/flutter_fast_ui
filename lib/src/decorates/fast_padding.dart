@@ -16,13 +16,17 @@ class FastPadding implements FastDecorate {
       child: child,
     );
   }
+}
 
-  ///声明配置
-  static Map<String, FastScheme> scheme = {
-    "padding": FastScheme<EdgeInsets>(),
-  };
-
-  factory FastPadding.fromJson(FastUIConfig config) {
+///构建器
+class FastPaddingBuilder extends FastDecorateBuilder {
+  @override
+  FastDecorate? buildDecorate(BuildContext context, FastUIConfig config) {
     return FastPadding(padding: config['padding']);
   }
+
+  @override
+  Map<String, FastScheme> get scheme => {
+        "padding": FastScheme<EdgeInsets>(),
+      };
 }

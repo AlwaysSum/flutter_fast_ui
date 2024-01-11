@@ -142,7 +142,7 @@ class FastParser {
         //映射类型
         return decorates.applyAfterBuild(
           context,
-          parser.builder(parsedConfig) as Widget,
+          parser.builder(context, parsedConfig) as Widget,
         ) as T;
       } else if (T case FastDecorate) {
         if (notifierValues.isNotEmpty && !skipNotifier) {
@@ -161,7 +161,7 @@ class FastParser {
           ) as T;
         }
         //映射类型
-        return parser.builder(parsedConfig);
+        return parser.builder(context, parsedConfig);
       }
     }
     return null;
