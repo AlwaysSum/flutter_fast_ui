@@ -11,7 +11,7 @@
       "children": [
         {
           "type": "container",
-          "color": "#0000ff",
+          "color": "#1c2834",
           "decorates": [
             {
               "type": "expand",
@@ -21,21 +21,39 @@
           "child": {
             "type": "list",
             "config": {
-              "type": "text",
-              "text": "${text}"
+              "type": "button",
+              "text": "${text}",
+              "color": "#ffffff",
+              "onTap": "@{set(${:markdownUrl},${markdown})}",
+              "decorates": [
+                {
+                  "type": "padding",
+                  "padding": {
+                    "vertical": 50
+                  }
+                }
+              ]
             },
             "data": [
               {
                 "type": "text",
-                "text": "简介"
+                "text": "简介",
+                "markdown": "assets/markdown/home.md"
               },
               {
                 "type": "text",
-                "text": "基本使用"
+                "text": "简单例子",
+                "markdown": "assets/markdown/simple.md"
               },
               {
                 "type": "text",
-                "text": "文本"
+                "text": "组件",
+                "markdown": "assets/markdown/widgets.md"
+              },
+              {
+                "type": "text",
+                "text": "装饰器",
+                "markdown": "assets/markdown/decorates.md"
               }
             ]
           }
@@ -45,7 +63,7 @@
           "decorates": [
             {
               "type": "expand",
-              "flex": 3
+              "flex": 4
             }
           ],
           "children": [
@@ -63,6 +81,9 @@
                   {
                     "type": "event",
                     "onTap": "@{set(${:padding},20)}"
+                  },
+                  {
+                    "type": "onlyPC"
                   }
                 ],
                 "text": "第一, ${:name}"

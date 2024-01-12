@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fast_ui/src/utils/utils_value.dart';
 
 import '../../flutter_fast_ui.dart';
-import '../decorates/base.dart';
-import '../decorates/fast_value_builder.dart';
-import '../types.dart';
 import '../utils/utils_regex.dart';
 
 /// 解析器

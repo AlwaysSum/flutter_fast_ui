@@ -20,12 +20,37 @@ void initCustomFastUI() {
                 child: Text("加载Markdown失败，请检查文件地址:\n${config["url"]}"),
               );
             }
-            return Center(
-              child: MarkdownWidget(data: data.data!),
+            final tocController = TocController();
+            final show = MediaQuery.of(context).size.width > 720;
+            return Row(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: MarkdownWidget(
+                    data: data.data!,
+                    tocController: tocController,
+                  ),
+                ),
+                if (show) Expanded(child: TocWidget(controller: tocController)),
+              ],
             );
           },
         );
       },
     )
+  });
+
+  FastUI.addDecorateParser({
+    //通过该装饰器，设置某些组件只在 PC 上显示
+    'onlyPC': FastConfigParserBuilder<FastDecorate>(
+        scheme: {
+          "width": FastScheme<num>(),
+        },
+        builder: (context, parser, config) {
+          final width = config["width"] ?? 720;
+          final show = MediaQuery.of(context).size.width > width;
+          return FastDecorateWidget(
+              (context, parser, child) => show ? child : const SizedBox());
+        })
   });
 }

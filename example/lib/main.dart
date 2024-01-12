@@ -31,7 +31,8 @@ class _MyAppState extends State<MyApp> {
       onGenerateRoute: (setting) {},
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          backgroundColor: Colors.black87,
+          title: const Text('FastUI文档'),
         ),
         body: FutureBuilder(
           future: rootBundle.loadString("assets/page/home.json", cache: false),

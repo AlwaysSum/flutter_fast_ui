@@ -13,6 +13,7 @@ class FastButtonBuilder extends FastWidgetBuilder {
     return FastButton(
       config['text'],
       color: config['color'],
+      onTap: config['onTap'],
     );
   }
 
@@ -20,6 +21,7 @@ class FastButtonBuilder extends FastWidgetBuilder {
   Map<String, FastScheme> get scheme => {
         "color": FastScheme<Color>(),
         "text": FastScheme<String>(),
+        "onTap": FastScheme<Function>(),
       };
 }
 
@@ -29,18 +31,20 @@ class FastButton extends StatelessWidget {
 
   //文本
   final String? data;
+  final VoidCallback? onTap;
 
   const FastButton(
     this.data, {
     super.key,
     this.color,
+    this.onTap,
   }) : assert(color is Color?);
 
   /// 解析方式
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      onPressed: () {},
+      onPressed: onTap,
       child: Text(
         data ?? '',
         style: TextStyle(
