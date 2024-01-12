@@ -1,7 +1,8 @@
 {
   "data": {
     ":name": "小明",
-    ":padding": 10
+    ":padding": 10,
+    ":markdownUrl": "assets/markdown/home.md"
   },
   "config": {
     "type": "container",
@@ -9,38 +10,42 @@
       "type": "row",
       "children": [
         {
-          "type": "list",
+          "type": "container",
+          "color": "#0000ff",
           "decorates": [
             {
               "type": "expand",
               "flex": 1
             }
           ],
-          "config": {
-            "type": "text",
-            "text": "简介"
-          },
-          "data": [
-            {
+          "child": {
+            "type": "list",
+            "config": {
               "type": "text",
-              "text": "简介"
+              "text": "${text}"
             },
-            {
-              "type": "text",
-              "text": "基本使用"
-            },
-            {
-              "type": "text",
-              "text": "文本"
-            }
-          ]
+            "data": [
+              {
+                "type": "text",
+                "text": "简介"
+              },
+              {
+                "type": "text",
+                "text": "基本使用"
+              },
+              {
+                "type": "text",
+                "text": "文本"
+              }
+            ]
+          }
         },
         {
           "type": "column",
           "decorates": [
             {
               "type": "expand",
-              "flex": 5
+              "flex": 3
             }
           ],
           "children": [
@@ -65,21 +70,18 @@
             },
             {
               "type": "container",
-              "color": "#ff0000",
+              "decorates": [
+                {
+                  "type": "padding",
+                  "padding": "${:padding}"
+                },
+                {
+                  "type": "expand"
+                }
+              ],
               "child": {
-                "type": "text",
-                "color": "#ffffff",
-                "decorates": [
-                  {
-                    "type": "padding",
-                    "padding": "${:padding}"
-                  },
-                  {
-                    "type": "event",
-                    "onTap": "@{set(${:padding},20)}"
-                  }
-                ],
-                "text": "第二： ${:name}"
+                "type": "markdown",
+                "url": "${:markdownUrl}"
               }
             }
           ]

@@ -5,11 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_fast_ui/flutter_fast_ui.dart';
 
+import 'init.dart';
+
 void main() {
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
     print(details);
   };
+
+  initCustomFastUI();
   runApp(const MyApp());
 }
 
