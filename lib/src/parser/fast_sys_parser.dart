@@ -8,6 +8,7 @@ import '../decorates/fast_event.dart';
 import '../decorates/fast_padding.dart';
 import '../types.dart';
 import '../view/container.dart';
+import '../view/list.dart';
 import '../view/text.dart';
 
 ///系统的解析器
@@ -19,6 +20,7 @@ class FastSystemParser {
     'row': FastRowBuilder(),
     'column': FastColumnBuilder(),
     'image': FastImageBuilder(),
+    'list': FastListBuilder(),
   };
 
   ///装饰器解析

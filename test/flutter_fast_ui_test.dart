@@ -96,11 +96,9 @@ void main() {
     final input = "@{test(\$name,你好)}";
     final functionNameRegex = RegExp(r"[a-zA-Z]*(?=\()");
     final match = functionNameRegex.firstMatch(input);
-    print("@@@@===> ${match?[0]}");
 
     final argsRegex = RegExp(r"\(\s*([^)]+?)\s*\)");
     final argsMatch = argsRegex.firstMatch(input);
-    print("@@@=>>${argsMatch?[0]}  ${argsMatch?[1]}");
 
     final [name, age] = ["你好", 123];
 

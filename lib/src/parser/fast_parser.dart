@@ -14,7 +14,7 @@ class FastParser {
   final Map<String, dynamic> data;
 
   /// 函数集合
-  final Map<String, dynamic> methods;
+  final Map<String, Function> methods;
 
   /// 组件解析器
   final Map<String, FastConfigParserBuilder<Widget>> parsers;
@@ -78,16 +78,38 @@ class FastParser {
 
       //转换属性
       config.forEach((key, value) {
+        final parser = allParser[config[FastKey.type]]!;
+        // 获取变量约束
+        final scheme = parser.scheme[key];
         //解析值
         var result = value;
         if (value is List && key != FastKey.decorate) {
-          result = value
-              .map<T>((e) => _parserValue<T>(
-                  context, config, type, key, e, allParser, notifierValues))
-              .toList();
+          result = _parserListValue(
+              context, config, type, key, value, scheme, notifierValues);
         } else {
-          result = _parserValue<T>(
-              context, config, type, key, value, allParser, notifierValues);
+          result = _parserValue(context, config, type, key, value,
+              parser.scheme[key], notifierValues);
+        }
+
+        ///转换组件
+        if (result is List && key == FastKey.children) {
+          result = result
+              .map<T>((e) => _parseConfigJson<T>(
+                    context,
+                    e[FastKey.type],
+                    e,
+                    allParser,
+                  )!)
+              .toList();
+        } else if (result is FastUIConfig &&
+            key == FastKey.child &&
+            result.containsKey(FastKey.type)) {
+          result = _parseConfigJson<T>(
+            context,
+            result[FastKey.type],
+            result,
+            allParser,
+          );
         }
 
         parsedConfig[key] = result;
@@ -107,7 +129,7 @@ class FastParser {
           decorates.add(
             FastValueBuilder(
               values: notifierValues.values.toList(),
-              builder: (context, _) {
+              builder: (context, FastParser parser, _) {
                 return _parseConfigJson<T>(
                   context,
                   type,
@@ -122,13 +144,14 @@ class FastParser {
         //映射类型
         return decorates.applyAfterBuild(
           context,
-          parser.builder(context, parsedConfig) as Widget,
+          this,
+          parser.builder(context, this, parsedConfig) as Widget,
         ) as T;
       } else if (T case FastDecorate) {
         if (notifierValues.isNotEmpty && !skipNotifier) {
           return FastValueBuilder(
             values: notifierValues.values.toList(),
-            builder: (context, child) {
+            builder: (context, parser, child) {
               return (_parseConfigJson<T>(
                 context,
                 type,
@@ -136,31 +159,44 @@ class FastParser {
                 parsers,
                 skipNotifier: true,
               ) as FastDecorate)
-                  .build(context, child);
+                  .build(context, parser, child);
             },
           ) as T;
         }
         //映射类型
-        return parser.builder(context, parsedConfig);
+        return parser.builder(context, this, parsedConfig);
       }
     }
     return null;
   }
 
+  List<T> _parserListValue<T>(
+    BuildContext context,
+    FastUIConfig config,
+    String type,
+    String key,
+    List<dynamic> value,
+    FastScheme<T>? scheme,
+    Map<String, ValueListenable> notifierValues,
+  ) {
+    List<T> data = value.map<T>((e) {
+      return _parserValue<T>(
+          context, config, type, key, e, scheme, notifierValues)!;
+    }).toList();
+    return data;
+  }
+
   ///解析值
-  _parserValue<T>(
+  T? _parserValue<T>(
     BuildContext context,
     FastUIConfig config,
     String type,
     String key,
     dynamic value,
-    Map<String, FastConfigParserBuilder<T>> allParser,
+    FastScheme<T>? scheme,
     Map<String, ValueListenable> notifierValues,
   ) {
-    final parser = allParser[config[FastKey.type]]!;
     var result = value;
-    // 获取变量约束
-    FastScheme? scheme = parser.scheme[key];
 
     // 解析变量和函数调用
     final (parsedResult, notifiers) = _parseDynamicMethodsAndVariable(
@@ -182,18 +218,7 @@ class FastParser {
         data: data,
         methods: methods,
       );
-    }
-
-    //转换组件
-    if (result is FastUIConfig &&
-        result.containsKey(FastKey.type) &&
-        (key == FastKey.child || key == FastKey.children)) {
-      result = _parseConfigJson<T>(
-        context,
-        result[FastKey.type],
-        result,
-        allParser,
-      );
+      return result;
     }
     return result;
   }
@@ -321,7 +346,6 @@ class FastParser {
         value = EdgeInsets.zero;
       }
     }
-
     return value;
   }
 
@@ -331,7 +355,6 @@ class FastParser {
     final decorates = config[FastKey.decorate];
     List<FastDecorate?> result = [];
     if (decorates != null && decorates is List && decorates.isNotEmpty) {
-      print("@@@ $decorates");
       result = decorates
           .map<FastDecorate?>((e) => decodeDecorateConfig(context, e))
           .toList();

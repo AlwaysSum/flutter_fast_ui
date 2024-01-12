@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fast_ui/src/types.dart';
+import '../parser/fast_parser.dart';
 import '../scheme/scheme.dart';
 import 'base.dart';
 
@@ -10,7 +11,7 @@ class FastPadding implements FastDecorate {
   final EdgeInsets? padding;
 
   @override
-  Widget build(BuildContext context, Widget child) {
+  Widget build(BuildContext context, FastParser parser,Widget child) {
     return Padding(
       padding: padding ?? EdgeInsets.zero,
       child: child,
@@ -21,7 +22,8 @@ class FastPadding implements FastDecorate {
 ///构建器
 class FastPaddingBuilder extends FastDecorateBuilder {
   @override
-  FastDecorate? buildDecorate(BuildContext context, FastUIConfig config) {
+  FastDecorate? buildDecorate(
+      BuildContext context, FastParser parser, FastUIConfig config) {
     return FastPadding(padding: config['padding']);
   }
 

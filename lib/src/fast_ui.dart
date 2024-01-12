@@ -19,7 +19,7 @@ class FastUI {
     BuildContext context,
     Map<String, dynamic> config, {
     Map<String, dynamic>? data,
-    Map<String, dynamic>? methods,
+    Map<String, Function>? methods,
   }) {
     final ui = FastParser(
       parsers: systemParser.parser,
@@ -35,7 +35,7 @@ class FastUI {
     BuildContext context,
     Map<String, dynamic> config, {
     Map<String, dynamic>? data,
-    Map<String, dynamic>? methods,
+    Map<String, Function>? methods,
   }) {
     final ui = FastParser(
       parsers: systemParser.parser,

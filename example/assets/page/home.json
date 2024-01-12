@@ -9,42 +9,68 @@
       "type": "row",
       "children": [
         {
-          "type": "container",
-          "color": "#00ff00",
+          "type": "list",
           "child": {
             "type": "text",
-            "color": "#ff0000",
-            "decorates": [
-              {
-                "type": "padding",
-                "padding": "${:padding}"
-              },
-              {
-                "type": "event",
-                "onTap": "@{add(${:padding},20)}"
-              }
-            ],
-            "text": "第一, ${:name}"
-          }
+            "text": "简介"
+          },
+          "data": [
+            {
+              "type": "text",
+              "text": "简介"
+            },
+            {
+              "type": "text",
+              "text": "基本使用"
+            },
+            {
+              "type": "text",
+              "text": "文本"
+            }
+          ]
         },
         {
-          "type": "container",
-          "color": "#ff0000",
-          "child": {
-            "type": "text",
-            "color": "#ffffff",
-            "decorates": [
-              {
-                "type": "padding",
-                "padding": "${:padding}"
-              },
-              {
-                "type": "event",
-                "onTap": "@{add(${:padding},20)}"
+          "type": "column",
+          "children": [
+            {
+              "type": "container",
+              "color": "#00ff00",
+              "child": {
+                "type": "text",
+                "color": "#ff0000",
+                "decorates": [
+                  {
+                    "type": "padding",
+                    "padding": "${:padding}"
+                  },
+                  {
+                    "type": "event",
+                    "onTap": "@{set(${:padding},20)}"
+                  }
+                ],
+                "text": "第一, ${:name}"
               }
-            ],
-            "text": "第二： ${:name}"
-          }
+            },
+            {
+              "type": "container",
+              "color": "#ff0000",
+              "child": {
+                "type": "text",
+                "color": "#ffffff",
+                "decorates": [
+                  {
+                    "type": "padding",
+                    "padding": "${:padding}"
+                  },
+                  {
+                    "type": "event",
+                    "onTap": "@{set(${:padding},20)}"
+                  }
+                ],
+                "text": "第二： ${:name}"
+              }
+            }
+          ]
         }
       ]
     }

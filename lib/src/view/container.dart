@@ -3,10 +3,13 @@ import 'package:flutter_fast_ui/flutter_fast_ui.dart';
 import 'package:flutter_fast_ui/src/types.dart';
 import 'package:flutter_fast_ui/src/view/base.dart';
 
+import '../parser/fast_parser.dart';
+
 ///构建器
 class FastContainerBuilder extends FastWidgetBuilder {
   @override
-  Widget buildWidget(BuildContext context, FastUIConfig config) {
+  Widget buildWidget(
+      BuildContext context, FastParser parser, FastUIConfig config) {
     return FastContainer(
       config['child'],
       color: config['color'],
@@ -37,7 +40,6 @@ class FastContainer extends StatelessWidget {
   /// 解析方式
   @override
   Widget build(BuildContext context) {
-    print("@@@ $child");
     return Container(
       decoration: BoxDecoration(
         color: color,

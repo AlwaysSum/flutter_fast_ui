@@ -3,9 +3,11 @@ import 'package:flutter_fast_ui/flutter_fast_ui.dart';
 import 'package:flutter_fast_ui/src/types.dart';
 import 'package:flutter_fast_ui/src/view/base.dart';
 
+import '../parser/fast_parser.dart';
+
 class FastRowBuilder extends FastWidgetBuilder {
   @override
-  Widget buildWidget(BuildContext context, FastUIConfig config) {
+  Widget buildWidget(BuildContext context,FastParser parser, FastUIConfig config) {
     return FastRow(
       children: config['children'],
     );
