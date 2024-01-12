@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_fast_ui/src/decorates/fast_expand.dart';
 import 'package:flutter_fast_ui/src/view/column.dart';
 import 'package:flutter_fast_ui/src/view/image.dart';
 import 'package:flutter_fast_ui/src/view/row.dart';
@@ -26,6 +27,7 @@ class FastSystemParser {
   ///装饰器解析
   final Map<String, FastConfigParserBuilder<FastDecorate>> parserDecorate = {
     'padding': FastPaddingBuilder(),
+    'expand': FastExpandBuilder(),
     'event': FastEventBuilder(),
   };
 }

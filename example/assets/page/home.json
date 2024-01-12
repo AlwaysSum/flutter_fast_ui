@@ -10,7 +10,13 @@
       "children": [
         {
           "type": "list",
-          "child": {
+          "decorates": [
+            {
+              "type": "expand",
+              "flex": 1
+            }
+          ],
+          "config": {
             "type": "text",
             "text": "简介"
           },
@@ -31,6 +37,12 @@
         },
         {
           "type": "column",
+          "decorates": [
+            {
+              "type": "expand",
+              "flex": 5
+            }
+          ],
           "children": [
             {
               "type": "container",

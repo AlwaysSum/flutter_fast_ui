@@ -9,6 +9,18 @@ abstract class FastDecorate {
   Widget build(BuildContext context, FastParser parser, Widget child);
 }
 
+class FastDecorateWidget implements FastDecorate {
+  final Widget Function(BuildContext context, FastParser parser, Widget child)
+      builder;
+
+  FastDecorateWidget(this.builder);
+
+  @override
+  Widget build(BuildContext context, FastParser parser, Widget child) {
+    return builder(context, parser, child);
+  }
+}
+
 ///构建器
 abstract class FastDecorateBuilder
     implements FastConfigParserBuilder<FastDecorate> {
