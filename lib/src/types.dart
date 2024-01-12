@@ -7,6 +7,7 @@ import 'scheme/scheme.dart';
 typedef FastUIConfig = Map<String, dynamic>;
 
 ///通过配置构造一个组件
+typedef FastConfigFunction = Function(BuildContext context, List args);
 
 class FastConfigParserBuilder<T> {
   final Map<String, FastScheme> scheme;

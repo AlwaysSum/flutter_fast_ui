@@ -11,7 +11,7 @@ class FastParser {
   final Map<String, dynamic> data;
 
   /// 函数集合
-  final Map<String, Function> methods;
+  final Map<String, FastConfigFunction> methods;
 
   /// 组件解析器
   final Map<String, FastConfigParserBuilder<Widget>> parsers;
@@ -197,6 +197,7 @@ class FastParser {
 
     // 解析变量和函数调用
     final (parsedResult, notifiers) = _parseDynamicMethodsAndVariable(
+      context,
       value,
       scheme,
       data,
@@ -222,6 +223,7 @@ class FastParser {
 
   ///解析一些动态变量和函数
   (T?, Map<String, ValueListenable>) _parseDynamicMethodsAndVariable<T>(
+    BuildContext context,
     dynamic value,
     FastScheme<T>? scheme,
     Map<String, dynamic>? data,
@@ -274,7 +276,9 @@ class FastParser {
               return e;
             }).toList();
 
-            return (method(argsList), allUseValues);
+            return method is FastConfigFunction
+                ? (method(context, argsList), allUseValues)
+                : (method(argsList), allUseValues);
           }
         } else if (value.startsWith("\${") && value.endsWith("}")) {
           //需要获取变量

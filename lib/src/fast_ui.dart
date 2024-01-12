@@ -17,7 +17,7 @@ class FastUI {
   static final Map<String, FastConfigParserBuilder<Widget>> customParser = {};
   static final Map<String, FastConfigParserBuilder<FastDecorate>>
       customDecorateParser = {};
-  static final Map<String, Function> customMethodsParser = {};
+  static final Map<String, FastConfigFunction> customMethodsParser = {};
   static final Map<String, dynamic> customDataParser = {};
 
   Future<String?> getPlatformVersion() {
@@ -29,7 +29,7 @@ class FastUI {
     BuildContext context,
     Map<String, dynamic> config, {
     Map<String, dynamic>? data,
-    Map<String, Function>? methods,
+    Map<String, FastConfigFunction>? methods,
   }) {
     final ui = getParser(data, methods).decodeConfig(context, config);
     return ui;
@@ -40,7 +40,7 @@ class FastUI {
     BuildContext context,
     Map<String, dynamic> config, {
     Map<String, dynamic>? data,
-    Map<String, Function>? methods,
+    Map<String, FastConfigFunction>? methods,
   }) {
     final ui = getParser(data, methods).decodeDecorateConfig(context, config);
     return ui;
@@ -49,7 +49,7 @@ class FastUI {
   ///获取解析器
   static FastParser getParser(
     Map<String, dynamic>? data,
-    Map<String, Function>? methods,
+    Map<String, FastConfigFunction>? methods,
   ) {
     return FastParser(
       parsers: {..._systemParser.parser, ...customParser},
@@ -80,7 +80,7 @@ class FastUI {
   }
 
   /// 添加全局函数
-  static addMethodsParser(Map<String, Function> parser) {
+  static addMethodsParser(Map<String, FastConfigFunction> parser) {
     customMethodsParser.addAll(parser);
   }
 

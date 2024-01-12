@@ -14,7 +14,7 @@ class FastDynamicView extends StatelessWidget {
   final Map<String, dynamic>? data;
 
   ///当前 View 所具备的函数
-  final Map<String, Function>? methods;
+  final Map<String, FastConfigFunction>? methods;
 
   @override
   Widget build(BuildContext context) {

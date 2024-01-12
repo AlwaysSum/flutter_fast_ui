@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
                 data: config['data'],
                 config: config['config'],
                 methods: {
-                  "onRefresh": (List args) {
+                  "onRefresh": (context,List args) {
                     print("@@@ $args");
                     final [
                       ValueNotifier<String> name,
@@ -70,3 +70,4 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+

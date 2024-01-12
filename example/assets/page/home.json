@@ -1,6 +1,6 @@
 {
   "data": {
-    ":name": "小明",
+    ":name": "这行文本只在 PC 显示",
     ":padding": 10,
     ":markdownUrl": "assets/markdown/home.md"
   },
