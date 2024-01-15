@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_fast_ui/flutter_fast_ui.dart';
+import 'package:flutter_fast_ui/src/extensions/ext_list.dart';
 import 'package:flutter_fast_ui/src/parser/fast_sys_methods.dart';
 
 import '../flutter_fast_ui_platform_interface.dart';
-import 'decorates/base.dart';
 import 'parser/fast_parser.dart';
 import 'parser/fast_sys_parser.dart';
-import 'types.dart';
 
 /// FAST UI
 ///
@@ -19,6 +19,7 @@ class FastUI {
       customDecorateParser = {};
   static final Map<String, FastConfigFunction> customMethodsParser = {};
   static final Map<String, dynamic> customDataParser = {};
+  static final List<FastSchemeParser> customValueParser = [];
 
   Future<String?> getPlatformVersion() {
     return FlutterFastUiPlatform.instance.getPlatformVersion();
@@ -65,6 +66,10 @@ class FastUI {
         ..._systemMethods.methods,
         ...(methods ?? {}),
       },
+      parserValues: [
+        ...customValueParser,
+        ..._systemParser.parserValues,
+      ],
     );
   }
 
@@ -87,5 +92,17 @@ class FastUI {
   /// 添加全局函数
   static addDataParser(Map<String, dynamic> data) {
     customDataParser.addAll(data);
+  }
+
+  /// 添加全局变量解析器
+  static addSchemeValueParser(FastSchemeParser parser) {
+    final find = customValueParser
+        .safeFirstWhere((element) => element?.valueType != parser.valueType);
+    if (find == null) {
+      customValueParser.add(parser);
+    } else {
+      throw Exception(
+          "addSchemeValueParser Error,【 ${find.valueType}】 parsers have been included.");
+    }
   }
 }

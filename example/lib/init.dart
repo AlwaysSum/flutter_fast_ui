@@ -12,8 +12,6 @@ void initCustomFastUI() {
         "url": FastScheme<String>(),
       },
       builder: (context, parser, config) {
-        final tocController = TocController();
-
         return FutureBuilder(
           future: rootBundle.loadString(config['url']),
           builder: (context, data) {
@@ -22,6 +20,8 @@ void initCustomFastUI() {
                 child: Text("加载Markdown失败，请检查文件地址:\n${config["url"]}"),
               );
             }
+
+            final tocController = TocController();
             final show = MediaQuery.of(context).size.width > 720;
             return Row(
               children: [
@@ -32,7 +32,11 @@ void initCustomFastUI() {
                     tocController: tocController,
                   ),
                 ),
-                if (show) Expanded(child: TocWidget(controller: tocController)),
+                if (show)
+                  Expanded(
+                      child: TocWidget(
+                    controller: tocController,
+                  )),
               ],
             );
           },
@@ -54,6 +58,4 @@ void initCustomFastUI() {
               (context, parser, child) => show ? child : const SizedBox());
         })
   });
-
-
 }

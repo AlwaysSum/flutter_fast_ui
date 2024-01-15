@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_fast_ui/src/extensions/ext_list.dart';
 import 'package:flutter_fast_ui/src/utils/utils_value.dart';
 
 import '../../flutter_fast_ui.dart';
@@ -19,11 +20,15 @@ class FastParser {
   /// 装饰器解释器
   final Map<String, FastConfigParserBuilder<FastDecorate>> parserDecorates;
 
+  /// 类型解释器
+  final List<FastSchemeParser> parserValues;
+
   FastParser({
     required this.parsers,
     required this.parserDecorates,
     required this.data,
     required this.methods,
+    required this.parserValues,
   });
 
   ///解析 配置
@@ -200,8 +205,6 @@ class FastParser {
       context,
       value,
       scheme,
-      data,
-      methods,
     );
     result = parsedResult;
     notifierValues.addAll(notifiers);
@@ -213,8 +216,6 @@ class FastParser {
         key,
         result,
         scheme,
-        data: data,
-        methods: methods,
       );
       return result;
     }
@@ -223,12 +224,7 @@ class FastParser {
 
   ///解析一些动态变量和函数
   (T?, Map<String, ValueListenable>) _parseDynamicMethodsAndVariable<T>(
-    BuildContext context,
-    dynamic value,
-    FastScheme<T>? scheme,
-    Map<String, dynamic>? data,
-    Map<String, dynamic>? methods,
-  ) {
+      BuildContext context, dynamic value, FastScheme<T>? scheme) {
     ///所有可监听的的动态变量
     final allUseValues = <String, ValueListenable>{};
 
@@ -276,9 +272,7 @@ class FastParser {
               return e;
             }).toList();
 
-            return method is FastConfigFunction
-                ? (method(context, argsList), allUseValues)
-                : (method(argsList), allUseValues);
+            return (method(context, argsList), allUseValues);
           }
         } else if (value.startsWith("\${") && value.endsWith("}")) {
           //需要获取变量
@@ -301,13 +295,7 @@ class FastParser {
 
   ///转换属性类型
   T? _parserBySchemeValue<T>(
-    String type,
-    String key,
-    dynamic value,
-    FastScheme<T> scheme, {
-    Map<String, dynamic>? data,
-    Map<String, dynamic>? methods,
-  }) {
+      String type, String key, dynamic value, FastScheme<T> scheme) {
     if (scheme.defaultValue != null && value == null) {
       value = scheme.defaultValue;
     }
@@ -317,34 +305,14 @@ class FastParser {
       '$errMsg:为必填参数。',
     );
 
-    //一些特殊类型转换
-    if (scheme.valueType case Color) {
-      if (value is int) {
-        value = Color(value);
-      } else if (value is String) {
-        value = UtilsValue.fromHexColor(value);
-      } else {
-        assert(value is int, "$errMsg:值必须为 int 类型或者 hex 字符串。");
-      }
-    } else if (scheme.valueType case EdgeInsets) {
-      if (value is num) {
-        value = EdgeInsets.all(value.toDouble());
-      } else if (value is Map<String, double>) {
-        if (value.containsKey('vertical') || value.containsKey('horizontal')) {
-          value = EdgeInsets.symmetric(
-            vertical: value['vertical'] ?? 0,
-            horizontal: value['horizontal'] ?? 0,
-          );
-        } else {
-          value = EdgeInsets.only(
-            left: value['left'] ?? 0,
-            right: value['right'] ?? 0,
-            top: value['top'] ?? 0,
-            bottom: value['bottom'] ?? 0,
-          );
-        }
-      } else {
-        value = EdgeInsets.zero;
+    final parserMethod = parserValues.safeFirstWhere(
+      (element) => scheme.valueType == element?.valueType,
+    );
+    if (parserMethod != null) {
+      try {
+        return parserMethod.parserJson(value);
+      } catch (e) {
+        throw Exception("$errMsg:$e");
       }
     }
     return value;
