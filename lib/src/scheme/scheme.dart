@@ -3,9 +3,9 @@ class FastScheme<T> {
   final T? defaultValue;
 
   ///是否必填
-  final bool? require;
+  final bool require;
 
-  FastScheme({this.defaultValue, this.require});
+  FastScheme({this.defaultValue, this.require = false});
 
   Type get valueType {
     return T;
@@ -18,7 +18,7 @@ abstract class FastSchemeParser<T> {
   }
 
   ///从 JSON 处解析值
-  T parserJson(dynamic value);
+  T? parserJson(dynamic value);
 }
 
 ///直接构建函数

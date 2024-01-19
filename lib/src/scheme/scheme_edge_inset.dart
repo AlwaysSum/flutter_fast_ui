@@ -5,8 +5,10 @@ import '../utils/utils_value.dart';
 
 class FastSchemeEdgeInsetsParser extends FastSchemeParser<EdgeInsets> {
   @override
-  EdgeInsets parserJson(value) {
-    if (value is num) {
+  EdgeInsets? parserJson(value) {
+    if(value == null){
+      return null;
+    }else if (value is num) {
       return EdgeInsets.all(value.toDouble());
     } else if (value is Map<String, double>) {
       if (value.containsKey('vertical') || value.containsKey('horizontal')) {

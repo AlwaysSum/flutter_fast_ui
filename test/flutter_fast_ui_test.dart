@@ -102,8 +102,6 @@ void main() {
 
     final [name, age] = ["你好", 123];
 
-    print("@@@ $name  , @@@ $age");
-
     // if (argsMatch?[1] != null) {
     //   final args =
     //       argsMatch![1]!.split(",");

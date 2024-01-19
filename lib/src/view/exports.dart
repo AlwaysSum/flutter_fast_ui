@@ -1,8 +1,8 @@
 export 'base.dart';
-export 'button.dart';
-export 'column.dart';
-export 'container.dart';
-export 'image.dart';
-export 'list.dart';
-export 'row.dart';
-export 'text.dart';
+export 'basic/button.dart';
+export 'layout/column.dart';
+export 'layout/container.dart';
+export 'basic/image.dart';
+export 'layout/list.dart';
+export 'layout/row.dart';
+export 'basic/text.dart';

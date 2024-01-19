@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fast_ui/src/extensions/ext_list.dart';
-import 'package:flutter_fast_ui/src/utils/utils_value.dart';
 
 import '../../flutter_fast_ui.dart';
 import '../utils/utils_regex.dart';
@@ -143,6 +142,8 @@ class FastParser {
             ),
           );
         }
+
+
         //映射类型
         return decorates.applyAfterBuild(
           context,
@@ -302,7 +303,7 @@ class FastParser {
     final errMsg = "组件：$type , $key";
     assert(
       scheme.require == false || value != null,
-      '$errMsg:为必填参数。',
+      '$errMsg:为必填参数 ${scheme.require}。',
     );
 
     final parserMethod = parserValues.safeFirstWhere(
@@ -312,7 +313,7 @@ class FastParser {
       try {
         return parserMethod.parserJson(value);
       } catch (e) {
-        throw Exception("$errMsg:$e");
+        rethrow;
       }
     }
     return value;

@@ -49,7 +49,6 @@ class _MyAppState extends State<MyApp> {
                 config: config['config'],
                 methods: {
                   "onRefresh": (context,List args) {
-                    print("@@@ $args");
                     final [
                       ValueNotifier<String> name,
                       ValueNotifier<num> padding

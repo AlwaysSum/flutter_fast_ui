@@ -5,8 +5,10 @@ import '../utils/utils_value.dart';
 
 class FastSchemeColorParser extends FastSchemeParser<Color> {
   @override
-  Color parserJson(value) {
-    if (value is int) {
+  Color? parserJson(value) {
+    if (value == null) {
+      return null;
+    } else if (value is int) {
       return Color(value);
     } else if (value is String) {
       return UtilsValue.fromHexColor(value);

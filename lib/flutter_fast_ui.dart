@@ -6,3 +6,4 @@ export 'src/types.dart';
 export 'src/const/keys.dart';
 export 'src/decorates/exports.dart';
 export 'src/view/exports.dart';
+export 'src/extensions/types.dart';

@@ -3,7 +3,7 @@ import 'package:flutter_fast_ui/flutter_fast_ui.dart';
 import 'package:flutter_fast_ui/src/types.dart';
 import 'package:flutter_fast_ui/src/view/base.dart';
 
-import '../parser/fast_parser.dart';
+import '../../parser/fast_parser.dart';
 
 class FastColumnBuilder extends FastWidgetBuilder {
   @override
@@ -24,16 +24,33 @@ class FastColumnBuilder extends FastWidgetBuilder {
 class FastColumn extends StatelessWidget {
   //配置文件
   final List<Widget> children;
+  final MainAxisAlignment mainAxisAlignment;
+  final MainAxisSize mainAxisSize;
+  final CrossAxisAlignment crossAxisAlignment;
+  final double spacing;
+  final Widget Function(BuildContext context, int index)? buildSpace;
 
   const FastColumn({
     required this.children,
     super.key,
+    this.mainAxisAlignment = MainAxisAlignment.start,
+    this.mainAxisSize = MainAxisSize.min,
+    this.crossAxisAlignment = CrossAxisAlignment.center,
+    this.spacing = 0,
+    this.buildSpace,
   }) : assert(children is List<Widget>?);
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: children,
+      mainAxisAlignment: mainAxisAlignment,
+      crossAxisAlignment: crossAxisAlignment,
+      mainAxisSize: mainAxisSize,
+      children: spacing > 0 || buildSpace != null
+          ? children.joinItem((index) => buildSpace != null
+              ? buildSpace!(context, index)
+              : SizedBox(height: spacing))
+          : children,
     );
   }
 }
